@@ -87,8 +87,9 @@ var controller = {
                                 message: 'Usuario registrado con éxito',
                                 user: userStored
                             });
-                        }); // Close save
-                    }); // Close bcrypt
+
+                        }); //--- Close save ---//
+                    }); //--- Close bcrypt ---//
                 } else {
                     return response.status(500).send({
                         status: 'error',
@@ -96,7 +97,7 @@ var controller = {
                         message: 'El usuario ya esta registrado'
                     });
                 }
-            });
+            }); //--- Close findOne ---//
 
         } else {
             return response.status(200).send({
@@ -109,7 +110,7 @@ var controller = {
                 password: validate_password
             });
         }
-    }
+    } //--- Close method save ---//
 };
 
 module.exports = controller;
