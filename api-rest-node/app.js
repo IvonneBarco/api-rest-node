@@ -12,7 +12,7 @@ var app = express();
 var user_routes = require('./routes/userRoutes');
 
 // 4. Middlewares : funcionalidades que se ejecutan antes de llegar a las acciones de los controllers
-app.use(bodyParser.urlencoded({extended:false})); //para que bodyParser funcione
+app.use(bodyParser.urlencoded({ extended: false })); //para que bodyParser funcione
 app.use(bodyParser.json()); //Para convertir la petición a un obj Json
 
 // . CORS

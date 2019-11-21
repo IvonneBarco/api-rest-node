@@ -17,5 +17,5 @@ exports.createToken = function (user) {
         exp: moment().add(30, 'days').unix
     };
 
-    return jwt.encode(payload, 'clave-secreta-para -generar-el-toke-@123');
+    return jwt.encode(payload, 'clave-secreta-para-generar-el-toke-123');
 }
