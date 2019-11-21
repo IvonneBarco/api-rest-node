@@ -335,7 +335,7 @@ var controller = {
             // 6. Buscar y actualizar documento bd
             User.findOneAndUpdate({ _id: userId }, { image: file_name }, { new: true }, (error, userUpdated) => {
 
-                if(error || !userUpdated){
+                if (error || !userUpdated) {
                     return response.status(500).send({
                         status: 'error',
                         code: 500,
@@ -352,8 +352,25 @@ var controller = {
                 });
             });
 
-        }
+        } //--- Close extension file ---//
 
+    }, //--- Close method uploadAvatar ---//
+
+    avatar: function (request, response) {
+        var fileName = request.params.fileName;
+        var pathFile = './uploads/users/' + fileName;
+
+        fs.exists(pathFile, (exists) => {
+            if (exists) {
+                return response.sendFile(path.resolve(pathFile));
+            } else {
+                return response.status(404).send({
+                    status: 'error',
+                    code: 404,
+                    message: 'La imagen no existe'
+                });
+            }
+        });
     }
 };
 
