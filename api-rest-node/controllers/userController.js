@@ -372,6 +372,47 @@ var controller = {
             }
         });
     }, //--- Close method avatar ---//
+
+    users: function (request, response) {
+        User.find().exec((error, users) => {
+            if (error || !users) {
+                return response.status(404).send({
+                    status: 'error',
+                    code: 404,
+                    message: 'No hay usuarios que mostrar'
+                });
+            } else {
+                return response.status(200).send({
+                    status: 'success',
+                    users
+                });
+            }
+
+
+        });
+    }, //--- Close method users list all ---//
+
+    user: function (request, response) {
+        var userId = request.params.userId;
+
+        User.findById(userId).exec((error, user) => {
+            if (error || !user) {
+                return response.status(404).send({
+                    status: 'error',
+                    code: 404,
+                    message: 'No existe el usuario'
+                });
+            } else {
+                return response.status(200).send({
+                    status: 'success',
+                    code: 200,
+                    user
+                });
+            }
+
+
+        });
+    } //--- Close method user list ---//
 };
 
 module.exports = controller;
