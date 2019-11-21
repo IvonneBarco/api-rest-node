@@ -371,7 +371,7 @@ var controller = {
                 });
             }
         });
-    }
+    }, //--- Close method avatar ---//
 };
 
 module.exports = controller;
