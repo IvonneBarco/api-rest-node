@@ -11,6 +11,7 @@ var app = express();
 // 7. Cargar archivos de rutas
 var user_routes = require('./routes/userRoutes');
 var topic_routes = require('./routes/topicRoutes');
+var comment_routes = require('./routes/commentRoutes');
 
 // 4. Middlewares : funcionalidades que se ejecutan antes de llegar a las acciones de los controllers
 app.use(bodyParser.urlencoded({ extended: false })); //para que bodyParser funcione
@@ -21,6 +22,7 @@ app.use(bodyParser.json()); //Para convertir la petición a un obj Json
 // 6. Reescribir rutas
 app.use('/api', user_routes);
 app.use('/api', topic_routes);
+app.use('/api', comment_routes);
 
 // 5. Exportar modulo
 module.exports = app;
