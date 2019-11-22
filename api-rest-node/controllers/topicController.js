@@ -144,7 +144,7 @@ var controller = {
         })
             .sort([['date', 'descending']])
             .exec((error, topics) => {
-                
+
                 if (error) {
                     return response.status(500).send({
                         status: 'error',
@@ -170,7 +170,44 @@ var controller = {
                 });
             });
 
-    }// --- Close getTopicsByUser method --- //
+    },// --- Close getTopicsByUser method --- //
+
+    getTopic: function (request, response) {
+
+        // 1. Sacar el id del topic de la url
+        var topicId = request.params.id;
+
+        // 2. Find por id del topic
+        Topic.findById(topicId)
+            .populate('user')
+            .exec((error, topic) => {
+                if (error) {
+                    return response.status(500).send({
+                        status: 'error',
+                        code: 500,
+                        message: 'Error en la petición'
+                    });
+                }
+
+                if (!topic) {
+                    return response.status(404).send({
+                        status: 'error',
+                        code: 404,
+                        message: 'El tema no se ha encontrado'
+                    });
+                }
+
+                // 3. Devolver resultado
+                return response.status(200).send({
+                    status: 'success',
+                    code: 200,
+                    message: 'Información de topic',
+                    topic
+                });
+            });
+
+
+    }
 };
 
 module.exports = controller;
