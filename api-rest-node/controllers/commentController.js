@@ -143,18 +143,70 @@ var controller = {
                     });
 
                 });
-
-
         }
 
     }, // --- Close update method --- //
 
     delete: function (request, response) {
-        return response.status(200).send({
-            status: 'success',
-            code: 200,
-            message: 'Metodo de eliminar comentario'
+
+        // 1. Sacar el od deñ topic y del comentario a borrar
+        var topicId = request.params.topicId;
+        var commentId = request.params.commentId;
+
+        // 2. Buscar el topic
+        Topic.findById(topicId, (error, topic) => {
+            if (error) {
+                return response.status(500).send({
+                    status: 'error',
+                    code: 500,
+                    message: 'Error en la petición'
+                });
+            }
+
+            if (!topic) {
+                return response.status(404).send({
+                    status: 'error',
+                    code: 404,
+                    message: 'No existe el tema'
+                });
+            }
+
+            // 3. Seleccionar el subdocumento (comentario)
+            var comment = topic.comment.id(commentId);
+
+            // 4. Borrar el comentario
+            if (comment) {
+                comment.remove();
+
+                // 5. Guardar el topic
+                topic.save((error) => {
+                    if (error) {
+                        return response.status(500).send({
+                            status: 'error',
+                            code: 500,
+                            message: 'Error en la petición'
+                        });
+                    }
+
+                    // 6. Devolver el resultado
+                    return response.status(200).send({
+                        status: 'success',
+                        code: 200,
+                        message: 'Comentario eliminado',
+                        topic
+                    });
+                });
+
+            } else {
+                return response.status(404).send({
+                    status: 'error',
+                    code: 404,
+                    message: 'No existe el comentario'
+                });
+            }
+
         });
+
     } // --- Close delete method --- //
 };
 
