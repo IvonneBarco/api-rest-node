@@ -312,9 +312,7 @@ var controller = {
                 topicRemove
             });
         });
-
-
-    }
+    }// --- Close delete method --- //
 };
 
 module.exports = controller;
