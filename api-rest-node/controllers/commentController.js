@@ -88,11 +88,65 @@ var controller = {
     }, // --- Close add method --- //
 
     update: function (request, response) {
-        return response.status(200).send({
-            status: 'success',
-            code: 200,
-            message: 'Metodo de editar comentario'
-        });
+
+        // 1. Conseguir id de comentario que llega de la url
+        var commentId = request.params.commentId;
+
+        // 2. Recoger datos del body y validar
+        var params = request.body;
+
+        //validar datos
+        try {
+            var validate_content = !validator.isEmpty(request.body.content);
+
+        } catch (error) {
+            return response.status(202).send({
+                status: 'warning',
+                code: 202,
+                message: 'No has realizado ningún comentario'
+            });
+        }
+
+        if (validate_content) {
+            // 3. Find and update de subdocumento de un comentario
+            Topic.findOneAndUpdate(
+                { 'comment._id': commentId },
+                {
+                    '$set': {
+                        'comment.$.content': params.content
+                    }
+                },
+                { new: true },
+                (error, commentTopicUpdate) => {
+                    if (error) {
+                        return response.status(500).send({
+                            status: 'error',
+                            code: 500,
+                            message: 'Error en la petición'
+                        });
+                    }
+
+                    if (!commentTopicUpdate) {
+                        return response.status(404).send({
+                            status: 'error',
+                            code: 404,
+                            message: 'No existe el comentario'
+                        });
+                    }
+
+                    // 4. Devolver los datos
+                    return response.status(200).send({
+                        status: 'success',
+                        code: 200,
+                        message: 'Comentario editado!',
+                        commentTopicUpdate
+                    });
+
+                });
+
+
+        }
+
     }, // --- Close update method --- //
 
     delete: function (request, response) {
