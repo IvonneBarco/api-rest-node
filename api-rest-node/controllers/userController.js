@@ -255,6 +255,34 @@ var controller = {
                         code: 202,
                         message: 'El email no puede ser modificado'
                     });
+                } else {
+                    // 3. Buscar y actualizar documento
+                    // User.findOneAndUpdate(condición, datos a actualizar, opciones, callback);
+                    User.findOneAndUpdate({ _id: userId }, params, { new: true }, (error, userUpdated) => {
+
+                        if (error) {
+
+                            return response.status(500).send({
+                                message: 'Error al actualizar usuario',
+                                params
+                            });
+                        }
+
+                        if (!userUpdated) {
+
+                            return response.status(500).send({
+                                message: 'No se ha actualizado el usuario',
+                                params
+                            });
+                        }
+
+                        // 4. Devolver respuesta
+
+                        return response.status(200).send({
+                            message: 'método actualizar',
+                            user: userUpdated
+                        });
+                    });
                 }
             });
 

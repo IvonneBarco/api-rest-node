@@ -207,6 +207,113 @@ var controller = {
             });
 
 
+    },// --- Close getTopicsByUser method --- //
+
+    update: function (request, response) {
+
+        // 1. Recoger el id del topic
+        var topicId = request.params.id;
+
+        // 2. Recoger los datos que llegan desde post
+        var params = request.body;
+
+        // 3. Validar datos
+        try {
+
+            var validate_title = !validator.isEmpty(params.title);
+            var validate_content = !validator.isEmpty(params.content);
+            var validate_language = !validator.isEmpty(params.language);
+
+        } catch (ex) {
+
+            return response.status(205).send({
+                status: 'warning',
+                code: 205,
+                message: 'Faltan datos por enviar'
+            });
+        }
+
+        if (validate_title && validate_content && validate_language) {
+            // 4. Montar un json con los datos modificables
+            var update = {
+                title: params.title,
+                content: params.content,
+                code: params.code,
+                language: params.language
+            }
+
+            // 5. Find and update del topic por id y por id de usuario
+            Topic.findOneAndUpdate({ _id: topicId, user: request.user.sub }, update, { new: true }, (error, topicUpdate) => {
+
+                if (error) {
+                    return response.status(500).send({
+                        status: 'error',
+                        code: 500,
+                        message: 'Error en la petición'
+                    });
+                }
+
+                if (!topicUpdate) {
+                    return response.status(500).send({
+                        status: 'error',
+                        code: 500,
+                        message: 'No se ha actualizado el tema'
+                    });
+                }
+
+                return response.status(200).send({
+                    status: 'success',
+                    code: 200,
+                    message: 'Tema actualziado con éxito',
+                    topicUpdate
+                });
+            });
+
+        } else {
+            return response.status(202).send({
+                status: 'warning',
+                code: 202,
+                message: 'La validación no es correcta'
+            });
+        }
+    }, // --- Close update method --- //
+
+    delete: function (request, response) {
+
+        // 1. Recoger el id del topic por la url
+        var topicId = request.params.id;
+
+        // 2. Find and delete por topicID y por userID
+        Topic.findOneAndDelete({ _id: topicId, user: request.user.sub }, (error, topicRemove) => {
+
+            if (error) {
+                // 3. Devolver respuesta
+                return response.status(200).send({
+                    status: 'success',
+                    code: 200,
+                    message: 'Error en la petición'
+                });
+            }
+
+            if (!topicRemove) {
+                // 3. Devolver respuesta
+                return response.status(200).send({
+                    status: 'success',
+                    code: 200,
+                    message: 'No se ha eliminado el tema'
+                });
+            }
+
+            // 3. Devolver respuesta
+            return response.status(200).send({
+                status: 'success',
+                code: 200,
+                message: 'Topic eliminado',
+                topicRemove
+            });
+        });
+
+
     }
 };
 
