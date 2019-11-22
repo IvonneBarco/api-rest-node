@@ -2,6 +2,7 @@
 
 //Importar Mongoose
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate-v2');
 
 //Define las propuedades que tendrá el objeto
 var Schema = mongoose.Schema;
@@ -20,11 +21,14 @@ var TopicSchema = Schema({
     title: String,
     content: String,
     code: String,
-    lenguage: String,
+    language: String,
     date: { type: Date, default: Date.now },
     user: { type: Schema.ObjectId, ref: 'User' },
     comment: [CommentSchema]
 });
+
+//Cargar paginación
+TopicSchema.plugin(mongoosePaginate),
 
 //Exportar modulo
 module.exports = mongoose.model('Topic', TopicSchema);

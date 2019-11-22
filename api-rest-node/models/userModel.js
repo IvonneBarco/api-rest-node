@@ -16,5 +16,13 @@ var UserSchema = Schema({
     role: String
 });
 
+//Configuración para no enviar algunos datos (No enviar password)
+UserSchema.methods.toJSON = function () {
+    var obj = this.toObject();
+    delete obj.password;
+
+    return obj
+}
+
 //Exportar modulo
 module.exports = mongoose.model('User', UserSchema);
