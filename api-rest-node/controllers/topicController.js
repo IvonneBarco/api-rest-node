@@ -312,7 +312,53 @@ var controller = {
                 topicRemove
             });
         });
-    }// --- Close delete method --- //
+    },// --- Close delete method --- //
+
+    search: function (request, response) {
+
+        // 1. Sacar string a buscar de la url
+        var searchString = request.params.search;
+
+        // 2. Find or
+        // $or --> permite evaluar condiciones con and o con or
+        // $regex --> expresión regular
+        // $options --> permite comprobar si hay una coincidencia 
+        Topic.find({
+            "$or": [
+                { "title": { "$regex": searchString, "$options": "i" } },
+                { "content": { "$regex": searchString, "$options": "i" } },
+                { "language": { "$regex": searchString, "$options": "i" } },
+                { "code": { "$regex": searchString, "$options": "i" } }
+            ]
+        }).sort([['date', 'descending']])
+            .exec((error, topic) => {
+
+                if (error) {
+                    return response.status(500).send({
+                        status: 'error',
+                        code: 500,
+                        message: 'Error en la petición'
+                    });
+                }
+
+                if (!topic) {
+                    return response.status(404).send({
+                        status: 'error',
+                        code: 404,
+                        message: 'No hay temas disponibles'
+                    });
+                }
+
+                // 3. Devolver resultado
+                return response.status(200).send({
+                    status: 'success',
+                    code: 200,
+                    message: 'Se ha encontrado las siguientes coincidencias',
+                    topic
+                });
+            });
+
+    }
 };
 
 module.exports = controller;
